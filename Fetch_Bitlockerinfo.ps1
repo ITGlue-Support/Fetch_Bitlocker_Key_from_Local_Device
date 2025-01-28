@@ -5,7 +5,7 @@ If($ITG_API -eq $null){
 else{
     Write-Host "Using existing API:" $ITG_API
 }
-#Find encrypted disk
+#Find the encrypted disk
 $blinfo = Get-BitLockerVolume
 Foreach ($item in $blinfo){
     if($item.ProtectionStatus -eq 'On'-and $item.EncryptionPercentage -eq '100'){
@@ -13,10 +13,10 @@ Foreach ($item in $blinfo){
         Write-Host "Encrypted MountPoint: "$MountPoint
     }
 }
-#Fetch the bitlocker key and Find the configuration in IT Glue
+#Fetch the BitLocker key and Find the configuration in IT Glue
 #===============================================================
-try{
 Foreach($MP in $MountPoint){
+try{
 $bitlocker = (Get-BitLockerVolume -MountPoint $MP).KeyProtector | ? {$_.KeyProtectorType -eq "RecoveryPassword"}
 $username = $bitlocker.KeyProtectorId.trim('{}')
 $password = $bitlocker.RecoveryPassword
@@ -77,4 +77,5 @@ $body = @"
 }
 "@
 Invoke-RestMethod "https://api.itglue.com/organizations/$organization_id/relationships/passwords" -Method 'POST' -Headers $headers -Body $body
+}
 }
