@@ -21,7 +21,6 @@ $bitlocker = (Get-BitLockerVolume -MountPoint $MP).KeyProtector | ? {$_.KeyProte
 $username = $bitlocker.KeyProtectorId.trim('{}')
 $password = $bitlocker.RecoveryPassword
 $hostname = hostname
-}
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Content-Type", "application/vnd.api+json")
 $headers.Add("x-api-key", "$ITG_API")
@@ -30,6 +29,7 @@ $configID = $configdetail.data.id
 $organization_id = $configdetail.data.attributes.'organization-id'
 If (!$configID){
     Write-Host "Configuration with name " $hostname "does not exist in IT Glue! Make sure that a configuration exists"
+    break
 }
 else{
     Write-Host "Configuration with name " $hostname "exist in IT Glue!"
